@@ -1,6 +1,6 @@
 /*  
 -----------------------------------------
-  DISPLAY EXTRACTED WORDS
+  VOCAB EXTRACTION DISPLAY
 -----------------------------------------
 */
 
@@ -41,34 +41,44 @@ function clearAll() {
 
 /*  
 -----------------------------------------
-  GOOGLE API INIT
+  GOOGLE LOGIN — NEW GIS TOKEN CLIENT
 -----------------------------------------
 */
 
 const CLIENT_ID = "346154006664-aabpfsd96cgacauqitpvkf0k55v4pm71.apps.googleusercontent.com";
-const API_KEY = ""; // not needed for Sheets write
 const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 
-function initGoogle() {
-    gapi.load("client:auth2", () => {
-        gapi.auth2.init({
-            client_id: CLIENT_ID,
-            scope: SCOPES
-        }).then(() => {
-            gapi.auth2.getAuthInstance().signIn().then(() => {
-                alert("Google Login Successful!");
-            });
-        });
+let tokenClient;
+let accessToken = null;
+
+// Initialize later when user clicks login
+window.onload = () => {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: (response) => {
+            accessToken = response.access_token;
+            alert("Google login successful!");
+        }
     });
+};
+
+function googleLogin() {
+    tokenClient.requestAccessToken();
 }
 
 /*  
 -----------------------------------------
-  UPLOAD TO GOOGLE SHEET
+  GOOGLE SHEETS UPLOAD
 -----------------------------------------
 */
 
 async function uploadToGoogleSheet() {
+
+    if (!accessToken) {
+        alert("Please sign in with Google first.");
+        return;
+    }
 
     const sheetURL = document.getElementById("sheetURL").value.trim();
     const text = document.getElementById("inputText").value.trim();
@@ -90,17 +100,21 @@ async function uploadToGoogleSheet() {
 
     const words = extractWords(text);
 
+    // Authorize API client with token
+    gapi.client.setToken({ access_token: accessToken });
+
+    // Load Sheets API
     await gapi.client.load("sheets", "v4");
 
-    // STEP 1 — Read "data" tab column A
-    const existing = await gapi.client.sheets.spreadsheets.values.get({
+    // Read existing words from "data" tab
+    let existing = await gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: sheetID,
         range: "data!A2:A"
     });
 
     let oldWords = existing.result.values ? existing.result.values.flat() : [];
 
-    // STEP 2 — Filter new words
+    // Filter new words
     let newWords = words.filter(w => !oldWords.includes(w));
 
     if (newWords.length === 0) {
@@ -108,25 +122,26 @@ async function uploadToGoogleSheet() {
         return;
     }
 
-    // STEP 3 — Insert into vocab_check (words + checkbox + date)
     let today = new Date().toLocaleDateString();
-    let rows = newWords.map(w => [w, "=TRUE", today]);
+
+    // Insert into vocab_check
+    let rowsCheck = newWords.map(w => [w, "=TRUE", today]);
 
     await gapi.client.sheets.spreadsheets.values.append({
         spreadsheetId: sheetID,
         range: "vocab_check!A2",
         valueInputOption: "USER_ENTERED",
-        resource: { values: rows }
+        resource: { values: rowsCheck }
     });
 
-    // STEP 4 — Also append to data tab (for history)
-    let dataRows = newWords.map(w => [w, today]);
+    // Insert into data tab
+    let rowsData = newWords.map(w => [w, today]);
 
     await gapi.client.sheets.spreadsheets.values.append({
         spreadsheetId: sheetID,
         range: "data!A2",
         valueInputOption: "USER_ENTERED",
-        resource: { values: dataRows }
+        resource: { values: rowsData }
     });
 
     alert("Upload complete! Added " + newWords.length + " new words.");
@@ -134,16 +149,11 @@ async function uploadToGoogleSheet() {
 
 /*  
 -----------------------------------------
-  GOOGLE SHEET ID EXTRACTOR
+  EXTRACT GOOGLE SHEET ID
 -----------------------------------------
 */
 
 function extractSheetID(url) {
     let match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-    if (match && match[1]) return match[1];
-
-    match = url.match(/spreadsheets\/u\/\d\/d\/([a-zA-Z0-9-_]+)/);
-    if (match && match[1]) return match[1];
-
-    return null;
+    return match ? match[1] : null;
 }
