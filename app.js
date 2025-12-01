@@ -1,3 +1,9 @@
+/*  
+-----------------------------------------
+  DISPLAY EXTRACTED WORDS
+-----------------------------------------
+*/
+
 function showExtractedWords() {
     const text = document.getElementById("inputText").value;
     const output = document.getElementById("output");
@@ -19,6 +25,12 @@ function showExtractedWords() {
     `;
 }
 
+/*  
+-----------------------------------------
+  WORD EXTRACTION LOGIC
+-----------------------------------------
+*/
+
 function extractWords(text) {
     let cleaned = text.toLowerCase();
     let words = cleaned.match(/[a-zA-Z']+/g) || [];
@@ -26,6 +38,12 @@ function extractWords(text) {
     unique.sort();
     return unique;
 }
+
+/*  
+-----------------------------------------
+  CLEAR INPUT AND OUTPUT
+-----------------------------------------
+*/
 
 function clearAll() {
     document.getElementById("inputText").value = "";
@@ -36,7 +54,7 @@ function clearAll() {
 
 /*  
 -----------------------------------------
- GOOGLE SHEETS INTEGRATION (PHASE 2)
+  GOOGLE SHEETS INTEGRATION (STRUCTURE)
 -----------------------------------------
 */
 
@@ -63,19 +81,32 @@ async function uploadToGoogleSheet() {
     const sheetID = extractSheetID(sheetURL);
 
     if (!sheetID) {
-        alert("Invalid Google Sheet link.");
+        alert("Invalid Google Sheet link. Cannot extract Sheet ID.");
         return;
     }
 
-    // Placeholder — next step we add real Google API calls
-    console.log("Sheet ID:", sheetID);
+    // Placeholder — real Google API code will be added soon
+    console.log("Sheet ID extracted:", sheetID);
     console.log("Words to upload:", words);
 
     alert("Google Sheets upload module initialized. Waiting for API integration.");
 }
 
-// Extract sheet ID from full URL
+/*  
+-----------------------------------------
+  UPDATED GOOGLE SHEET ID EXTRACTOR
+-----------------------------------------
+*/
+
 function extractSheetID(url) {
-    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-    return match ? match[1] : null;
+
+    // Standard pattern: /d/<ID>/
+    let match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (match && match[1]) return match[1];
+
+    // Rare mobile/alternate format: /spreadsheets/u/0/d/<ID>/
+    match = url.match(/spreadsheets\/u\/\d\/d\/([a-zA-Z0-9-_]+)/);
+    if (match && match[1]) return match[1];
+
+    return null;
 }
