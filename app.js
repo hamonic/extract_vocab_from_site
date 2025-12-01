@@ -20,27 +20,62 @@ function showExtractedWords() {
 }
 
 function extractWords(text) {
-    // 1. Lowercase
     let cleaned = text.toLowerCase();
-
-    // 2. Extract alphabetic words
     let words = cleaned.match(/[a-zA-Z']+/g) || [];
-
-    // 3. Remove duplicates
     let unique = [...new Set(words)];
-
-    // 4. Sort alphabetically
     unique.sort();
-
     return unique;
 }
 
 function clearAll() {
-    // Clear input
     document.getElementById("inputText").value = "";
-
-    // Clear output
     const output = document.getElementById("output");
     output.style.display = "none";
     output.innerHTML = "";
+}
+
+/*  
+-----------------------------------------
+ GOOGLE SHEETS INTEGRATION (PHASE 2)
+-----------------------------------------
+*/
+
+// Main entry point for Google Sheets upload
+async function uploadToGoogleSheet() {
+
+    const sheetURL = document.getElementById("sheetURL").value.trim();
+    const text = document.getElementById("inputText").value.trim();
+
+    if (!sheetURL) {
+        alert("Please paste your Google Sheet link first.");
+        return;
+    }
+
+    if (!text) {
+        alert("Please enter some text before uploading.");
+        return;
+    }
+
+    // Extract words
+    const words = extractWords(text);
+
+    // Convert URL → Sheet ID
+    const sheetID = extractSheetID(sheetURL);
+
+    if (!sheetID) {
+        alert("Invalid Google Sheet link.");
+        return;
+    }
+
+    // Placeholder — next step we add real Google API calls
+    console.log("Sheet ID:", sheetID);
+    console.log("Words to upload:", words);
+
+    alert("Google Sheets upload module initialized. Waiting for API integration.");
+}
+
+// Extract sheet ID from full URL
+function extractSheetID(url) {
+    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    return match ? match[1] : null;
 }
