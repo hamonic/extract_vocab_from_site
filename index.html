@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>My First Test Module</title>
+  <title>Vocabulary Tool</title>
   <style>
     body {
-      font-family: Arial;
-      max-width: 600px;
+      font-family: Arial, sans-serif;
+      max-width: 700px;
       margin: auto;
       padding: 20px;
     }
@@ -16,25 +16,35 @@
       font-size: 16px;
       padding: 10px;
     }
+    button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: 1px solid #888;
+      background: #f0f0f0;
+    }
     #output {
       margin-top: 20px;
       padding: 15px;
-      border-radius: 10px;
+      border-radius: 8px;
       background: #f0f8ff;
-      font-size: 18px;
       border: 1px solid #87cefa;
       display: none;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
 
-<h2>Test Module</h2>
+<h2>Vocabulary Extraction Tool</h2>
 
-<textarea id="inputText" placeholder="Type something here..."></textarea>
+<textarea id="inputText" placeholder="Paste your text here..."></textarea>
 <br><br>
 
 <button onclick="showText()">Submit</button>
+<button onclick="clearAll()">Clear</button>
 
 <div id="output"></div>
 
