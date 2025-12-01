@@ -1,4 +1,4 @@
-function showText() {
+function showExtractedWords() {
     const text = document.getElementById("inputText").value;
     const output = document.getElementById("output");
 
@@ -7,16 +7,11 @@ function showText() {
         return;
     }
 
-    // Extract words
+    // Extract unique sorted vocabulary
     const words = extractWords(text);
 
     output.style.display = "block";
     output.innerHTML = `
-        <strong style="font-size:22px;">Original Text:</strong><br><br>
-        <div style="color:#0066cc;">${text}</div>
-
-        <hr style="margin:20px 0;">
-
         <strong style="font-size:22px;">Extracted Words (${words.length}):</strong><br><br>
         <div style="color:#0066cc; font-size:18px;">
             ${words.join(", ")}
