@@ -46,7 +46,7 @@
 
 <h2>Vocabulary Extraction Tool</h2>
 
-<!-- NEW: Input Google Sheet URL -->
+<!-- Google Sheet link -->
 <input id="sheetURL" type="text" placeholder="Paste your Google Sheet link here..." />
 
 <textarea id="inputText" placeholder="Paste your text here..."></textarea>
@@ -54,15 +54,18 @@
 
 <button onclick="showExtractedWords()">Submit</button>
 <button onclick="clearAll()">Clear</button>
-
-<!-- NEW: Upload button -->
 <button onclick="uploadToGoogleSheet()">Upload to Google Sheet</button>
+
+<!-- NEW: Google Sign-In -->
+<button onclick="initGoogle()">Sign in with Google</button>
 
 <div id="output"></div>
 
-<!-- IMPORTANT: Increase version number -->
-<script src="app.js?v=6"></script>
+<!-- Google API Loader -->
+<script src="https://apis.google.com/js/api.js"></script>
+
+<!-- Your script -->
+<script src="app.js?v=7"></script>
 
 </body>
 </html>
-
