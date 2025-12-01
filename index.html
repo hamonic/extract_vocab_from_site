@@ -16,6 +16,12 @@
       font-size: 16px;
       padding: 10px;
     }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
     button {
       padding: 10px 20px;
       margin-right: 10px;
@@ -40,16 +46,22 @@
 
 <h2>Vocabulary Extraction Tool</h2>
 
+<!-- NEW: Input Google Sheet URL -->
+<input id="sheetURL" type="text" placeholder="Paste your Google Sheet link here..." />
+
 <textarea id="inputText" placeholder="Paste your text here..."></textarea>
 <br><br>
 
 <button onclick="showExtractedWords()">Submit</button>
 <button onclick="clearAll()">Clear</button>
 
+<!-- NEW: Upload button -->
+<button onclick="uploadToGoogleSheet()">Upload to Google Sheet</button>
+
 <div id="output"></div>
 
-<!-- IMPORTANT: Increase version number to force GitHub to refresh JS -->
-<script src="app.js?v=4"></script>
+<!-- IMPORTANT: Increase version number -->
+<script src="app.js?v=5"></script>
 
 </body>
 </html>
