@@ -7,22 +7,24 @@ function showText() {
         return;
     }
 
+    // Extract words
+    const words = extractWords(text);
+
     output.style.display = "block";
     output.innerHTML = `
-        <strong style="color:#333; font-size:22px;">Your Input:</strong><br><br>
-        <span style="color:#0066cc;">${text}</span>
+        <strong style="font-size:22px;">Original Text:</strong><br><br>
+        <div style="color:#0066cc;">${text}</div>
+
+        <hr style="margin:20px 0;">
+
+        <strong style="font-size:22px;">Extracted Words (${words.length}):</strong><br><br>
+        <div style="color:#0066cc; font-size:18px;">
+            ${words.join(", ")}
+        </div>
     `;
 }
 
-function extractVocabulary() {
-    const text = document.getElementById("inputText").value;
-    const output = document.getElementById("output");
-
-    if (text.trim() === "") {
-        output.style.display = "none";
-        return;
-    }
-
+function extractWords(text) {
     // 1. Lowercase
     let cleaned = text.toLowerCase();
 
@@ -35,11 +37,15 @@ function extractVocabulary() {
     // 4. Sort alphabetically
     unique.sort();
 
-    // 5. Display result
-    output.style.display = "block";
-    output.innerHTML = `
-        <strong style="font-size:22px;">Extracted Vocabulary (${unique.length} words):</strong>
-        <br><br>
-        <div style="color:#0066cc; font-size:18px;">${unique.join(", ")}</div>
-    `;
+    return unique;
+}
+
+function clearAll() {
+    // Clear input
+    document.getElementById("inputText").value = "";
+
+    // Clear output
+    const output = document.getElementById("output");
+    output.style.display = "none";
+    output.innerHTML = "";
 }
