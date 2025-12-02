@@ -1,3 +1,16 @@
+
+const CLIENT_ID = "YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com";
+const SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+
+function extractWords(text) {
+    return [...new Set(
+        text
+            .toLowerCase()
+            .match(/\b[a-zA-Z]+\b/g) || []
+    )];
+}
+
+/*
 function initGoogle() {
     gapi.load("client:auth2", async () => {
         await gapi.client.init({
@@ -14,6 +27,19 @@ function initGoogle() {
         });
     });
 }
+/*
+
+function initGoogle() {
+  google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: (tokenResponse) => {
+      console.log("Google Login Success", tokenResponse);
+      alert("Google Login Successful!");
+    }
+  }).requestAccessToken();
+}
+
 
 
 async function uploadToGoogleSheet() {
@@ -94,5 +120,6 @@ function extractSheetID(url) {
 
     return null;
 }
+
 
 
