@@ -79,3 +79,20 @@ async function uploadToGoogleSheet() {
         alert("Google Sheets upload failed. See console.");
     }
 }
+
+/*  
+-----------------------------------------
+  GOOGLE SHEET ID EXTRACTOR
+-----------------------------------------
+*/
+function extractSheetID(url) {
+    let match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (match && match[1]) return match[1];
+
+    match = url.match(/spreadsheets\/u\/\d\/d\/([a-zA-Z0-9-_]+)/);
+    if (match && match[1]) return match[1];
+
+    return null;
+}
+
+
